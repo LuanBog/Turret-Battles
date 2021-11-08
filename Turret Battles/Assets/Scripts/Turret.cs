@@ -14,6 +14,16 @@ public class Turret : MonoBehaviour {
     public int magazine = 1;
     public bool isShooting = false;
 
+    [HideInInspector] public string team;
+    [HideInInspector] public Color teamColor;
+
+    void Start() {
+        GameObject turretBase = transform.Find("Base").gameObject;
+        SpriteRenderer turretBaseSprite = turretBase.GetComponent<SpriteRenderer>();
+
+        turretBaseSprite.color = teamColor;
+    }
+
     void Update() {
         // Rotation
         float inspectorZ = UnityEditor.TransformUtils.GetInspectorRotation(gameObject.transform).z;
@@ -45,9 +55,14 @@ public class Turret : MonoBehaviour {
         while (magazine > 0) {
             isShooting = true;
 
-            Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+            GameObject bulletClone = (GameObject) Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+            Bullet bulletScript = bulletClone.GetComponent<Bullet>();
+
+            bulletScript.team = team;
+            bulletScript.teamColor = teamColor;
+
             magazine--;
-            yield return new WaitForSeconds(0.125f);
+            yield return new WaitForSeconds(0.0625f);
         }
 
         isShooting = false;

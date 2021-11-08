@@ -17,4 +17,15 @@ public class Bullet : MonoBehaviour {
     void Update() {
         transform.position += transform.right * moveSpeed * Time.deltaTime;
     }
+
+    void OnTriggerEnter2D(Collider2D hit) {
+        if (hit.tag == "Block") {
+            Block block = hit.GetComponent<Block>();
+
+            if (block.team != team) {
+                Destroy(hit.gameObject);
+                Destroy(this.gameObject);
+            }
+        }
+    }
 }

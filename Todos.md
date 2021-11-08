@@ -5,3 +5,5 @@
 * [x] Add the attack base with the pads
 * [x] Reset ball's velocity when it touches pad
 * [x] Add teams
+* [x] Add blocks
+* [] Make turrets be able to destroy each other

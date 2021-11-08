@@ -11,10 +11,13 @@ public class Pad : MonoBehaviour {
     public PadType type;
 
     void RespawnBall(Transform ball) {
+        Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
+
         float randomX = Random.Range(ballRespawnPointOne.position.x, ballRespawnPointTwo.position.x);
         Vector2 newPosition = new Vector2(randomX, ballRespawnPointOne.position.y);
 
         ball.position = newPosition;
+        rb.velocity = new Vector3(0f, 0f, 0f);
     }
 
     void OnTriggerEnter2D(Collider2D hit) {

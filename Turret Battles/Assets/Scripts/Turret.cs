@@ -5,28 +5,54 @@ using UnityEngine;
 public class Turret : MonoBehaviour {
 
     public float rotationSpeed;
+    public float topRotationBorder;
+    public float bottomRotationBorder;
+    private bool reverse;
+
     public GameObject bullet;
     public Transform shootPoint;
-
-    void Start() {
-
-    }
+    public int magazine = 1;
+    public bool isShooting = false;
 
     void Update() {
-        // Movement
+        // Rotation
+        float inspectorZ = UnityEditor.TransformUtils.GetInspectorRotation(gameObject.transform).z;
 
-        Vector3 rotation = new Vector3(0f, 0f, rotationSpeed * Time.deltaTime);
+        if (inspectorZ >= topRotationBorder)
+        {
+            reverse = true;
+        }
+        else if (inspectorZ <= bottomRotationBorder)
+        {
+            reverse = false;
+        }
+
+        Vector3 rotation;
+
+        if (reverse)
+            rotation = new Vector3(0f, 0f, -rotationSpeed * Time.deltaTime);
+        else
+            rotation = new Vector3(0f, 0f, rotationSpeed * Time.deltaTime);
 
         transform.Rotate(rotation);
-
-        // Shooting
-
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            Shoot();
-        }
     }
 
-    void Shoot() {
-        GameObject bulletClone = (GameObject) Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+    public void Shoot() {
+        StartCoroutine(ShootEnumerator());
+    }
+
+    IEnumerator ShootEnumerator() {
+        while (magazine > 0) {
+            isShooting = true;
+
+            Instantiate(bullet, shootPoint.position, shootPoint.rotation);
+            magazine--;
+            yield return new WaitForSeconds(0.125f);
+        }
+
+        isShooting = false;
+
+        if (magazine <= 0)
+            magazine = 1;
     }
 }
